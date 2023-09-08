@@ -3,14 +3,15 @@ package dev.sarvesh.productservice.services;
 import dev.sarvesh.productservice.dtos.FakeStoreProductDto;
 import dev.sarvesh.productservice.dtos.GenericProductDto;
 import dev.sarvesh.productservice.exceptions.NotFoundException;
-import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 public interface ProductService {
-    FakeStoreProductDto getProductById(Long id) throws NotFoundException;
+    GenericProductDto getProductById(Long id) throws NotFoundException;
 
-    ResponseEntity<FakeStoreProductDto> createProduct(GenericProductDto product);
+    GenericProductDto createProduct(GenericProductDto product);
 
-    ResponseEntity<FakeStoreProductDto[]> getAllProducts();
+    List<GenericProductDto> getAllProducts();
 
     boolean deleteProductById(Long id);
 

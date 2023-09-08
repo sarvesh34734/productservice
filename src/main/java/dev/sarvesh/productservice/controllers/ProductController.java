@@ -1,6 +1,5 @@
 package dev.sarvesh.productservice.controllers;
 
-import dev.sarvesh.productservice.dtos.FakeStoreProductDto;
 import dev.sarvesh.productservice.dtos.GenericProductDto;
 import dev.sarvesh.productservice.exceptions.NotFoundException;
 import dev.sarvesh.productservice.services.ProductService;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -29,19 +27,15 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<List<GenericProductDto>> getAllProducts(){
-        FakeStoreProductDto[] products = productService.getAllProducts().getBody();
+        List<GenericProductDto> products = productService.getAllProducts();
         assert products != null;
-        List<GenericProductDto> response = Arrays.stream(products)
-                .map(ProductController::toGenericProductDto)
-                .toList();
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(products);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<GenericProductDto> getProductById(@PathVariable("id") Long id) throws NotFoundException {
-        FakeStoreProductDto product = productService.getProductById(id);
-        GenericProductDto response = toGenericProductDto(product);
-        return ResponseEntity.ok().body(response);
+        GenericProductDto product = productService.getProductById(id);
+        return ResponseEntity.ok().body(product);
     }
 
 
@@ -58,9 +52,9 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<GenericProductDto> createProduct(@RequestBody GenericProductDto product){
-        FakeStoreProductDto response = productService.createProduct(product).getBody();
+        GenericProductDto response = productService.createProduct(product);
 
-        return ResponseEntity.ok().body(toGenericProductDto(response));
+        return ResponseEntity.ok().body(response);
     }
 
     @PutMapping("{id}")
@@ -73,17 +67,6 @@ public class ProductController {
         else{
             return ResponseEntity.badRequest().build();
         }
-    }
-
-    private static GenericProductDto toGenericProductDto(FakeStoreProductDto product){
-        GenericProductDto response = new GenericProductDto();
-        response.setId(product.getId());
-        response.setTitle(product.getTitle());
-        response.setCategory(product.getCategory());
-        response.setImage(product.getImage());
-        response.setDescription(product.getDescription());
-        response.setPrice(product.getPrice());
-        return response;
     }
 
 }
