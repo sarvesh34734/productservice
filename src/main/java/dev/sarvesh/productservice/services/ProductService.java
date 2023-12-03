@@ -5,15 +5,17 @@ import dev.sarvesh.productservice.dtos.GenericProductDto;
 import dev.sarvesh.productservice.exceptions.NotFoundException;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ProductService {
-    GenericProductDto getProductById(Long id) throws NotFoundException;
+
+    GenericProductDto getProductById(String id) throws NotFoundException;
 
     GenericProductDto createProduct(GenericProductDto product);
 
     List<GenericProductDto> getAllProducts();
 
-    boolean deleteProductById(Long id);
+    void deleteProductById(String id);
 
     boolean updateProductById(Long id, GenericProductDto product);
 }

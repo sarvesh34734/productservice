@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -18,8 +19,8 @@ public class FakeStoreProductService implements ProductService {
     private FakeStoreProductServiceClient fakeStoreProductServiceClient;
 
     @Override
-    public GenericProductDto getProductById(Long id) throws NotFoundException {
-        FakeStoreProductDto result = fakeStoreProductServiceClient.getProductById(id);
+    public GenericProductDto getProductById(String id) throws NotFoundException {
+        FakeStoreProductDto result = fakeStoreProductServiceClient.getProductById(Long.getLong(id));
         return convertFakeStoreProductDtoToGenericDto(result);
     }
 
@@ -38,8 +39,8 @@ public class FakeStoreProductService implements ProductService {
     }
 
     @Override
-    public boolean deleteProductById(Long id) {
-        return fakeStoreProductServiceClient.deleteProductById(id);
+    public void deleteProductById(String id) {
+        fakeStoreProductServiceClient.deleteProductById(Long.getLong(id));
     }
 
     @Override
@@ -49,7 +50,7 @@ public class FakeStoreProductService implements ProductService {
 
     private static GenericProductDto convertFakeStoreProductDtoToGenericDto(FakeStoreProductDto fakeStoreProductDto){
         GenericProductDto genericDto = new GenericProductDto();
-        genericDto.setId(fakeStoreProductDto.getId());
+        genericDto.setId(UUID.randomUUID());
         genericDto.setPrice(fakeStoreProductDto.getPrice());
         genericDto.setDescription(fakeStoreProductDto.getDescription());
         genericDto.setImage(fakeStoreProductDto.getImage());

@@ -1,9 +1,11 @@
 package dev.sarvesh.productservice.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.sarvesh.productservice.dtos.GenericProductDto;
 import dev.sarvesh.productservice.exceptions.NotFoundException;
 import dev.sarvesh.productservice.services.ProductService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,27 +36,21 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GenericProductDto> getProductById(@PathVariable("id") Long id) throws NotFoundException {
+    public ResponseEntity<GenericProductDto> getProductById(@PathVariable("id") String id) throws NotFoundException {
         GenericProductDto product = productService.getProductById(id);
         return ResponseEntity.ok().body(product);
     }
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProductById(@PathVariable("id") Long id){
-        boolean response = productService.deleteProductById(id);
-        if(response){
-            return ResponseEntity.ok().build();
-        }
-        else{
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<Void> deleteProductById(@PathVariable("id") String id){
+        productService.deleteProductById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping
     public ResponseEntity<GenericProductDto> createProduct(@RequestBody GenericProductDto product){
         GenericProductDto response = productService.createProduct(product);
-
         return ResponseEntity.ok().body(response);
     }
 

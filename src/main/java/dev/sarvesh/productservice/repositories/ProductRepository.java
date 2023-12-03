@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -25,4 +26,6 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     // but as per method response it will try to map it to Product
     // nativeQuery = false default means it is Hibernate query
     List<Product> findByCurrencyAndTitle(String currency,String title);
+
+    Optional<Product> findById(UUID id);
 }
