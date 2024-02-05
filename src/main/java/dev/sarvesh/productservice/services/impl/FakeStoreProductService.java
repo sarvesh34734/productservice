@@ -32,6 +32,11 @@ public class FakeStoreProductService implements ProductService {
     }
 
     @Override
+    public GenericProductDto createProduct(GenericProductDto genericProduct, String token,String email) {
+        return null;
+    }
+
+    @Override
     public List<GenericProductDto> getAllProducts() {
 
         FakeStoreProductDto[] results = fakeStoreProductServiceClient.getAllProducts();

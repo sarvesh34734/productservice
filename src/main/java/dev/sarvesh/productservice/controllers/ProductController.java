@@ -1,23 +1,19 @@
 package dev.sarvesh.productservice.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.sarvesh.productservice.dtos.GenericProductDto;
 import dev.sarvesh.productservice.exceptions.NotFoundException;
 import dev.sarvesh.productservice.services.ProductService;
+import io.micrometer.common.lang.Nullable;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 
@@ -29,6 +25,7 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping
+    @PreAuthorize("hasRole('seller')")
     public ResponseEntity<List<GenericProductDto>> getAllProducts(){
         List<GenericProductDto> products = productService.getAllProducts();
         assert products != null;
@@ -49,8 +46,10 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<GenericProductDto> createProduct(@RequestBody GenericProductDto product){
-        GenericProductDto response = productService.createProduct(product);
+    public ResponseEntity<GenericProductDto> createProduct(@Nullable @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                                           @RequestParam String email,
+                                                           @RequestBody GenericProductDto product) throws AccessDeniedException {
+        GenericProductDto response = productService.createProduct(product,token,email);
         return ResponseEntity.ok().body(response);
     }
 
@@ -64,6 +63,12 @@ public class ProductController {
         else{
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public void handleAccessDeniedException(Exception ex){
+
     }
 
 }

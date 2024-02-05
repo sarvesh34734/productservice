@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import java.util.List;
 
@@ -20,7 +18,7 @@ public class Category extends BaseModel {
     private String name;
 
     @OneToMany(mappedBy = "category")
-    @Fetch(FetchMode.SUBSELECT)
+
     // this mappedBy is used to tell spring that this is the same relation
     // as that in product represented by category attribute otherwise spring will treat it differently.
     private List<Product> products;

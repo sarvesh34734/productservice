@@ -26,6 +26,7 @@ public class Product extends BaseModel {
     //     1   :    1
     //     m   :    1
     // final mapping - m : 1 - manyToOne
+    @ToString.Exclude
     @ManyToOne(cascade = {CascadeType.PERSIST})
     @JoinColumn(name="category") // just renames it to category instead of category_id
     private Category category;

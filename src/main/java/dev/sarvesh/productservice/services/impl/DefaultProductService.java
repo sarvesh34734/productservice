@@ -1,16 +1,20 @@
 package dev.sarvesh.productservice.services.impl;
 
 import dev.sarvesh.productservice.dtos.GenericProductDto;
+import dev.sarvesh.productservice.dtos.JwtDto;
 import dev.sarvesh.productservice.exceptions.NotFoundException;
 import dev.sarvesh.productservice.models.Category;
 import dev.sarvesh.productservice.models.Price;
 import dev.sarvesh.productservice.models.Product;
 import dev.sarvesh.productservice.repositories.ProductRepository;
+import dev.sarvesh.productservice.services.AuthService;
 import dev.sarvesh.productservice.services.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,6 +27,8 @@ public class DefaultProductService implements ProductService {
 
     private ProductRepository productRepository;
 
+    private AuthService authService;
+
     @Override
     public GenericProductDto getProductById(String id) throws NotFoundException {
         Optional<Product> product =  productRepository.findById(UUID.fromString(id));
@@ -33,8 +39,17 @@ public class DefaultProductService implements ProductService {
     }
 
     @Override
-    public GenericProductDto createProduct(GenericProductDto genericProduct) {
+    public GenericProductDto createProduct(GenericProductDto product) {
+        return null;
+    }
+
+    @Override
+    public GenericProductDto createProduct(GenericProductDto genericProduct, String token,String email) throws AccessDeniedException {
         assert genericProduct != null;
+        JwtDto userData = authService.getUserFromJwtToken(token,email);
+        if(CollectionUtils.isEmpty(userData.getRoles()) || !userData.getRoles().contains("MENTOR")){
+            throw new AccessDeniedException("user t allowed");
+        }
         Product productModel = genericProductToProduct(genericProduct);
         Product savedProduct =  productRepository.save(productModel);
         return productToGenericProduct(savedProduct);
