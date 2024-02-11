@@ -46,10 +46,10 @@ public class DefaultProductService implements ProductService {
     @Override
     public GenericProductDto createProduct(GenericProductDto genericProduct, String token,String email) throws AccessDeniedException {
         assert genericProduct != null;
-        JwtDto userData = authService.getUserFromJwtToken(token,email);
-        if(CollectionUtils.isEmpty(userData.getRoles()) || !userData.getRoles().contains("MENTOR")){
-            throw new AccessDeniedException("user t allowed");
-        }
+//        JwtDto userData = authService.getUserFromJwtToken(token,email);
+//        if(CollectionUtils.isEmpty(userData.getRoles()) || !userData.getRoles().contains("MENTOR")){
+//            throw new AccessDeniedException("user t allowed");
+//        }
         Product productModel = genericProductToProduct(genericProduct);
         Product savedProduct =  productRepository.save(productModel);
         return productToGenericProduct(savedProduct);

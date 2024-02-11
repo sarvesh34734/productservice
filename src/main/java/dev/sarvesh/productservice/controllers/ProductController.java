@@ -25,7 +25,6 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping
-    @PreAuthorize("hasRole('seller')")
     public ResponseEntity<List<GenericProductDto>> getAllProducts(){
         List<GenericProductDto> products = productService.getAllProducts();
         assert products != null;
