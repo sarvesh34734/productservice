@@ -1,18 +1,20 @@
 package dev.sarvesh.productservice.services.impl;
 
 import dev.sarvesh.productservice.dtos.GenericProductDto;
-import dev.sarvesh.productservice.dtos.JwtDto;
 import dev.sarvesh.productservice.exceptions.NotFoundException;
 import dev.sarvesh.productservice.models.Category;
 import dev.sarvesh.productservice.models.Price;
 import dev.sarvesh.productservice.models.Product;
+
 import dev.sarvesh.productservice.repositories.ProductRepository;
 import dev.sarvesh.productservice.services.AuthService;
 import dev.sarvesh.productservice.services.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
@@ -22,12 +24,12 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-@Primary
 public class DefaultProductService implements ProductService {
 
     private ProductRepository productRepository;
 
     private AuthService authService;
+
 
     @Override
     public GenericProductDto getProductById(String id) throws NotFoundException {
@@ -52,6 +54,7 @@ public class DefaultProductService implements ProductService {
 //        }
         Product productModel = genericProductToProduct(genericProduct);
         Product savedProduct =  productRepository.save(productModel);
+        productRepository.save(productModel);
         return productToGenericProduct(savedProduct);
     }
 
@@ -73,6 +76,16 @@ public class DefaultProductService implements ProductService {
         Product savedProduct = productRepository.getReferenceById(UUID.fromString(Long.toString(id)));
 
         return false;
+    }
+
+    @Override
+    public Page<GenericProductDto> searchProducts(String query, Pageable pageable) {
+        Page<Product> productPage = productRepository.findAllByTitleContaining(query,pageable);
+        List<GenericProductDto> products = productPage
+                .get().map(DefaultProductService::productToGenericProduct).toList();
+
+        Page<GenericProductDto> searchResult = new PageImpl<>(products,pageable,productPage.getTotalPages());
+        return searchResult;
     }
 
     private static GenericProductDto productToGenericProduct(Product product){

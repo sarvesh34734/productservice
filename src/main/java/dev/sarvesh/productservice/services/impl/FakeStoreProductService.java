@@ -6,6 +6,9 @@ import dev.sarvesh.productservice.exceptions.NotFoundException;
 import dev.sarvesh.productservice.services.ProductService;
 import dev.sarvesh.productservice.thirdpartyclients.productservice.fakestore.FakeStoreProductServiceClient;
 import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -14,6 +17,7 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
+@Primary
 public class FakeStoreProductService implements ProductService {
 
     private FakeStoreProductServiceClient fakeStoreProductServiceClient;
@@ -38,6 +42,7 @@ public class FakeStoreProductService implements ProductService {
 
     @Override
     public List<GenericProductDto> getAllProducts() {
+        // get a product from api call and cache it to redis
 
         FakeStoreProductDto[] results = fakeStoreProductServiceClient.getAllProducts();
         return Arrays.stream(results).map(FakeStoreProductService::convertFakeStoreProductDtoToGenericDto).toList();
@@ -51,6 +56,11 @@ public class FakeStoreProductService implements ProductService {
     @Override
     public boolean updateProductById(Long id, GenericProductDto product) {
         return fakeStoreProductServiceClient.updateProductById(id,product);
+    }
+
+    @Override
+    public Page<GenericProductDto> searchProducts(String query, Pageable pageable) {
+        return null;
     }
 
     private static GenericProductDto convertFakeStoreProductDtoToGenericDto(FakeStoreProductDto fakeStoreProductDto){

@@ -16,17 +16,17 @@ public class SpringSecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize.requestMatchers("/actuator/health")
                         .permitAll()
-                        .requestMatchers("/api/v1/products/")
-                        .hasAuthority("SELLER")
+//                        .requestMatchers("/api/v1/products/")
+//                        .hasAuthority("SELLER")
                         .anyRequest()
-                        .authenticated()
-                )
-                .oauth2ResourceServer((oauth2) -> oauth2.jwt(
-                        // use custom converter
-                        jwtConfigurer -> jwtConfigurer
-                                .jwtAuthenticationConverter(new CustomJwtAuthenticationConverter())
-                ));
-        return http.build();
+                        .permitAll()
+                );
+//                .oauth2ResourceServer((oauth2) -> oauth2.jwt(
+//                        // use custom converter
+//                        jwtConfigurer -> jwtConfigurer
+//                                .jwtAuthenticationConverter(new CustomJwtAuthenticationConverter())
+//                ));
+        return http.csrf().disable().cors().disable().build();
     }
 
 }

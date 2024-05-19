@@ -3,6 +3,8 @@ package dev.sarvesh.productservice.services;
 import dev.sarvesh.productservice.dtos.FakeStoreProductDto;
 import dev.sarvesh.productservice.dtos.GenericProductDto;
 import dev.sarvesh.productservice.exceptions.NotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
@@ -21,4 +23,6 @@ public interface ProductService {
     void deleteProductById(String id);
 
     boolean updateProductById(Long id, GenericProductDto product);
+
+    Page<GenericProductDto> searchProducts(String query,Pageable pageable);
 }
