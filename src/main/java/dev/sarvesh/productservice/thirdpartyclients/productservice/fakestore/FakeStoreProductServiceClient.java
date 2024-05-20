@@ -12,6 +12,8 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.UUID;
+
 @AllArgsConstructor
 @Service
 public class FakeStoreProductServiceClient implements ThirdPartyProductServiceClient {
@@ -23,7 +25,7 @@ public class FakeStoreProductServiceClient implements ThirdPartyProductServiceCl
     private RestTemplateBuilder restTemplateBuilder;
 
     @Override
-    public FakeStoreProductDto getProductById(Long id) throws NotFoundException {
+    public FakeStoreProductDto getProductById(Integer id) throws NotFoundException {
         RestTemplate restTemplate = restTemplateBuilder.build();
 //        we can pass dynamic variable like id as it has curly braces in requestUrl {id}
         FakeStoreProductDto product =  restTemplate

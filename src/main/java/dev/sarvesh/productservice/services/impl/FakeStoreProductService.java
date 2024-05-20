@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -22,10 +23,22 @@ public class FakeStoreProductService implements ProductService {
 
     private FakeStoreProductServiceClient fakeStoreProductServiceClient;
 
+    private RedisTemplate<String, Object> redisTemplate;
+
     @Override
     public GenericProductDto getProductById(String id) throws NotFoundException {
-        FakeStoreProductDto result = fakeStoreProductServiceClient.getProductById(Long.getLong(id));
-        return convertFakeStoreProductDtoToGenericDto(result);
+
+        GenericProductDto genericProductDto = (GenericProductDto) redisTemplate.opsForHash().get("PRODUCTS",id);
+
+        if(null !=  genericProductDto){
+            System.out.println("serving from redis cache");
+            return genericProductDto;
+        }
+
+        FakeStoreProductDto result = fakeStoreProductServiceClient.getProductById(Integer.parseInt(id));
+        GenericProductDto fetchedProduct = convertFakeStoreProductDtoToGenericDto(result);
+        redisTemplate.opsForHash().put("PRODUCTS",id,fetchedProduct);
+        return fetchedProduct;
     }
 
     @Override

@@ -4,8 +4,10 @@ import dev.sarvesh.productservice.dtos.FakeStoreProductDto;
 import dev.sarvesh.productservice.dtos.GenericProductDto;
 import dev.sarvesh.productservice.exceptions.NotFoundException;
 
+import java.util.UUID;
+
 public interface ThirdPartyProductServiceClient {
-    FakeStoreProductDto getProductById(Long id) throws NotFoundException;
+    FakeStoreProductDto getProductById(Integer id) throws NotFoundException;
 
     FakeStoreProductDto createProduct(GenericProductDto product);
 
