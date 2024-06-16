@@ -1,6 +1,7 @@
 package dev.sarvesh.productservice.services.impl;
 
 import dev.sarvesh.productservice.dtos.GenericProductDto;
+import dev.sarvesh.productservice.dtos.UserDto;
 import dev.sarvesh.productservice.exceptions.NotFoundException;
 import dev.sarvesh.productservice.models.Category;
 import dev.sarvesh.productservice.models.Price;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
@@ -24,16 +26,20 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Primary
 public class DefaultProductService implements ProductService {
 
     private ProductRepository productRepository;
 
     private AuthService authService;
 
+    private RestTemplate restTemplate;
 
     @Override
     public GenericProductDto getProductById(String id) throws NotFoundException {
         Optional<Product> product =  productRepository.findById(UUID.fromString(id));
+//        UserDto user = restTemplate.getForEntity("http://userservice/users/1b147f5c-63a8-4aaa-9081-aa89b6b39ebd", UserDto.class).getBody();
+//        System.out.println("user fetched from user service"+user);
         if(product.isEmpty()){
             throw new NotFoundException(String.format("Product with id %s not found",id));
         }
